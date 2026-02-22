@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DR ILLIAM SPECIAL BOOKS | Library</title>
+    <title>NORE PREMIER | Library</title>
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --gold: #D4AF37;
-            --dark: #0f0f0f;
-            --book-red: #8e1a1a;
-            --book-blue: #1a2a5e;
-            --book-green: #1a4a1a;
+            --dark: #050505;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -21,20 +20,240 @@
             color: #fff;
             font-family: 'Lato', sans-serif;
             overflow-x: hidden;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            min-height: 100vh;
         }
 
-        /* =========================================
-           SCENE 1: THE OPENING BOOK ANIMATION
-           ========================================= */
-        #intro-scene {
+        /* --- 1. INTRO SCENE (Animation) --- */
+        #intro-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 9999; /* Iko juu kabisa */
             display: flex;
             justify-content: center;
+            align-items: center;
+            transition: opacity 1.5s ease, visibility 1.5s;
+            perspective: 1000px;
+        }
+
+        /* Kitabu cha Animation */
+        .intro-book {
+            width: 260px; height: 380px;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateY(-20deg);
+            transition: transform 1s;
+        }
+
+        .ib-cover {
+            position: absolute; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #461111, #2a0808);
+            border: 2px solid var(--gold);
+            border-radius: 5px 15px 15px 5px;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            transform-origin: left;
+            transition: transform 2.5s ease-in-out;
+            z-index: 10;
+        }
+        
+        .ib-pages {
+            position: absolute; top: 10px; left: 10px;
+            width: 240px; height: 360px;
+            background: #fff; color: #000;
+            display: flex; justify-content: center; align-items: center;
+            text-align: center; font-family: 'Cinzel', serif;
+            z-index: 5;
+        }
+
+        /* Class ya kufungua kitabu */
+        .intro-book.fungua .ib-cover {
+            transform: rotateY(-130deg);
+        }
+
+        /* --- 2. LIBRARY SCENE (Rafu za Vitabu) --- */
+        #library-container {
+            padding: 50px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            opacity: 0; /* Imefichwa mwanzo */
+            transition: opacity 2s ease;
+        }
+
+        .shelf-title {
+            text-align: center; margin-bottom: 50px;
+            font-family: 'Cinzel', serif; color: var(--gold);
+            font-size: 3rem; text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+
+        .books-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        /* MFUMO MPYA: Link Tag (<a>) badala ya Div */
+        .book-link {
+            text-decoration: none; /* Ondoa mstari wa link */
+            width: 200px; height: 300px;
+            position: relative;
+            perspective: 1000px;
+            display: block; /* Muhimu ili iweze kubofya */
+        }
+
+        .book-card {
+            width: 100%; height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.4s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        .book-link:hover .book-card {
+            transform: rotateY(-20deg) translateZ(20px) scale(1.05);
+            z-index: 100;
+        }
+
+        .bk-front {
+            position: absolute; width: 100%; height: 100%;
+            background: linear-gradient(45deg, #1a1a1a, #333);
+            border-radius: 4px 8px 8px 4px;
+            border-left: 10px solid rgba(255,255,255,0.1); /* Spine effect */
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            padding: 15px; text-align: center;
+            color: #fff;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        .bk-title { font-family: 'Cinzel', serif; color: var(--gold); font-size: 1.2rem; margin-bottom: 5px; }
+        .bk-author { font-size: 0.8rem; color: #aaa; }
+        
+        /* Rangi Mbalimbali */
+        .red-bk { background: linear-gradient(135deg, #5c0e0e, #2b0303); }
+        .blue-bk { background: linear-gradient(135deg, #0e1d5c, #03082b); }
+        .green-bk { background: linear-gradient(135deg, #0e5c1a, #032b08); }
+
+        /* Kitufe cha Skip */
+        #skip-btn {
+            position: absolute; bottom: 50px;
+            padding: 10px 25px; border: 1px solid var(--gold);
+            background: transparent; color: var(--gold);
+            cursor: pointer; z-index: 10000;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SCENE 1: INTRO -->
+    <div id="intro-overlay">
+        <div class="intro-book" id="myBook">
+            <div class="ib-pages">
+                <p>NORE PREMIER<br><br>Loading...</p>
+            </div>
+            <div class="ib-cover">
+                <h1 style="font-family:'Cinzel'; color:#D4AF37; font-size:2rem;">NORE<br>PREMIER</h1>
+            </div>
+        </div>
+        <button id="skip-btn" onclick="finishAnimation()">SKIP</button>
+    </div>
+
+    <!-- SCENE 2: LIBRARY -->
+    <div id="library-container">
+        <h1 class="shelf-title">NORE LIBRARY</h1>
+        
+        <div class="books-grid">
+            
+            <!-- KITABU 1: Link ya Google (Test) -->
+            <!-- Hapa tunatumia <a href="..."> ambayo ni lazima ifanye kazi -->
+            <a href="https://www.google.com" target="_blank" class="book-link">
+                <div class="book-card">
+                    <div class="bk-front red-bk">
+                        <div class="bk-title">The Beginning</div>
+                        <div class="bk-author">Test Link (Google)</div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- KITABU 2: Link ya Wikipedia (Test) -->
+            <a href="https://www.wikipedia.org" target="_blank" class="book-link">
+                <div class="book-card">
+                    <div class="bk-front blue-bk">
+                        <div class="bk-title">Business 101</div>
+                        <div class="bk-author">Strategy</div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- KITABU 3: Weka link yako hapa -->
+            <a href="https://blogger.com" target="_blank" class="book-link">
+                <div class="book-card">
+                    <div class="bk-front green-bk">
+                        <div class="bk-title">Nature's Law</div>
+                        <div class="bk-author">Science</div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- KITABU 4 -->
+            <a href="#" class="book-link">
+                <div class="book-card">
+                    <div class="bk-front">
+                        <div class="bk-title">Dark Psychology</div>
+                        <div class="bk-author">Mind Control</div>
+                    </div>
+                </div>
+            </a>
+
+             <!-- KITABU 5 -->
+             <a href="#" class="book-link">
+                <div class="book-card">
+                    <div class="bk-front red-bk">
+                        <div class="bk-title">Investment</div>
+                        <div class="bk-author">Finance</div>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+    <script>
+        // Mipangilio
+        const overlay = document.getElementById('intro-overlay');
+        const book = document.getElementById('myBook');
+        const library = document.getElementById('library-container');
+
+        window.onload = function() {
+            // 1. Anza kufungua kitabu baada ya sekunde 0.5
+            setTimeout(() => {
+                book.classList.add('fungua');
+            }, 500);
+
+            // 2. Maliza animation baada ya sekunde 4
+            setTimeout(finishAnimation, 4000);
+        };
+
+        function finishAnimation() {
+            // Fadesha Intro
+            overlay.style.opacity = '0';
+            
+            // Subiri fade iishe (1.5s) ndio uondoe kabisa overlay
+            setTimeout(() => {
+                overlay.style.visibility = 'hidden'; // Ficha kabisa ili isizuie click
+                overlay.style.display = 'none'; // Ondoa kwenye layout
+                
+                // Onyesha Library
+                library.style.opacity = '1';
+                
+                // Ruhusu scroll
+                document.body.style.overflowY = 'auto';
+            }, 1500);
+        }
+    </script>
+</body>
+</html>            justify-content: center;
             align-items: center;
             background: radial-gradient(circle, #222 0%, #000 100%);
             z-index: 100;
